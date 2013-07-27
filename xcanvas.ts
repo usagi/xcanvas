@@ -95,4 +95,21 @@ module xcanvas {
     }
   }
 
+  class vector2_t {
+    constructor(x: number, y: number) { this.x = x; this.y = y; }
+    x = 0;
+    y = 0;
+    add(a: vector2_t) { this.x += a.x; this.y += a.y; }
+    sub(a: vector2_t) { this.x -= a.x; this.y -= a.y; }
+    mul(a: number) { this.x *= a; this.y *= a; }
+    div(a: number) { this.x /= a; this.y /= a; }
+    static add(a: vector2_t, b: vector2_t) { return new vector2_t(a.x + b.x, a.y + b.y); }
+    static sub(a: vector2_t, b: vector2_t) { return new vector2_t(a.x - b.x, a.y - b.y); }
+    static mul(a: vector2_t, b: number) { return new vector2_t(a.x * b, a.y * b); }
+    static div(a: vector2_t, b: number) { return new vector2_t(a.x / b, a.y / b); }
+    static get zero() { return new vector2_t(0, 0); }
+    static get unit() { return new vector2_t(1, 1); }
+  }
+
+
 }
