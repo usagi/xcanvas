@@ -95,7 +95,7 @@ module xcanvas {
     }
   }
 
-  class vector2_t {
+  export class vector2_t {
     constructor(x: number, y: number) { this.x = x; this.y = y; }
     x = 0;
     y = 0;
@@ -111,5 +111,21 @@ module xcanvas {
     static get unit() { return new vector2_t(1, 1); }
   }
 
+  export class positioned_object_t extends drawable_game_component {
+    position = vector2_t.zero;
+  }
+
+  export class velocitied_object_t extends positioned_object_t {
+    velocity = vector2_t.zero;
+    update(game_time: game_time_t) { this.position.add(vector2_t.mul(this.velocity, game_time.elapsed_game_time.getTime())); }
+  }
+
+  export class accelerated_object_t extends velocitied_object_t {
+    accelerations: Array<vector2_t>;
+    update(game_time: game_time_t) {
+      var sum_acceleration = this.accelerations.reduce((p, c) => vector2_t.add(p, c), vector2_t.zero);
+      this.velocity.add(vector2_t.mul(sum_acceleration, game_time.elapsed_game_time.getTime()));
+    }
+  }
 
 }
