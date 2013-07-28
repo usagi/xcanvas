@@ -108,27 +108,48 @@ module xcanvas {
       this.initialize_timers();
       
       this.update();
-      setInterval(this.update, this.target_elapsed_time.getTime());
-      
       this.draw();
-      setInterval(this.draw, this.target_elapsed_time.getTime());
       
       return this;
     }
 
+    // it is true if frame rate to slowly
+    is_running_slowly = false;
+
     // update; component to call update if it is enabled 
     update() {
+      // get the time at this method started
+      var time_update_started = new Date();
+      // refresh total game time
       this.total_game_time_ = new Date(this.total_game_time_.getTime() + this.target_elapsed_time.getTime());
+      // update components
       this.components
         .filter((v)=> v.get_enabled())
         .forEach((v) => v.update(this.game_time));
+      // calc the time of the current method elapsed
+      var current_elapsed_time = new Date().getTime() - time_update_started.getTime();
+      // load member property to local storage
+      var target_elapsed_time = this.target_elapsed_time.getTime();
+      // is running slowly?
+      if (current_elapsed_time > target_elapsed_time)
+      {
+        // slowly
+        this.is_running_slowly = true;
+        setTimeout(this.update, 0);
+      } else {
+        // not slowly
+        this.is_running_slowly = false;
+        setTimeout(this.update, target_elapsed_time - current_elapsed_time);
+      }
     }
 
     // update; component to call update if it is enabled and it has draw method
+    // ToDo: impl is_running_slowly
     draw() {
       this.components
         .filter((v: any) => v.draw instanceof Function)
         .forEach((v: any) => v.draw(this.game_time));
+      setTimeout(this.draw, this.target_elapsed_time.getTime());
     }
   }
 
