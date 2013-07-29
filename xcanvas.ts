@@ -22,6 +22,24 @@ module xcanvas {
     get_draw_order(): number;
   }
 
+  // order priority enum for use update_order and draw_order
+  export enum order_priority {
+    // for super high priority; mainly using basic system(e.g. input_manager)
+    super_high = -1000,
+    // for very high priority
+    very_high = -100,
+    // for high priority
+    high = -10,
+    // for default
+    medium = 0,
+    // for low priority
+    low = 10,
+    // for very low priority
+    very_low = 100,
+    // for super low priority
+    super_low = 1000
+  }
+
   // game_time class
   export class game_time_t {
     // reference of the game class
