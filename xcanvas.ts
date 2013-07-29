@@ -437,4 +437,175 @@ module xcanvas {
     }
   }
 
+  // input devices; convertible to modern game controllers
+  export enum input_e {
+    // A, B
+    button_A, button_B,
+    // X, Y
+    button_X, button_Y,
+    // L, R
+    button_L, button_R,
+    // triggers
+    trigger_L, trigger_R,
+    // POV
+    pov,
+    // sticks
+    stick_L, stick_R,
+    // select, start
+    select, start,
+    // big X
+    X
+  }
+
+  // input POV device state
+  export enum pov_e {
+    none,
+    up,
+    up_right,
+    right,
+    down_right,
+    down,
+    down_left,
+    left,
+    up_left
+  }
+
+  // input button device state
+  export enum button_e {
+    released = -2,
+    releasing = -1,
+    unkown = 0,
+    pressing = 1,
+    pressed = 2
+  }
+
+  // input state for use input state snapshot
+  export class input_state_t {
+    states = [];
+    constructor() {
+      this.states[input_e.button_A] = button_e.unkown;
+      this.states[input_e.button_B] = button_e.unkown;
+      this.states[input_e.button_X] = button_e.unkown;
+      this.states[input_e.button_Y] = button_e.unkown;
+      this.states[input_e.button_L] = button_e.unkown;
+      this.states[input_e.button_R] = button_e.unkown;
+      this.states[input_e.trigger_L] = 0;
+      this.states[input_e.trigger_R] = 0;
+      this.states[input_e.pov] = pov_e.none;
+      this.states[input_e.stick_L] = vector2_t.zero;
+      this.states[input_e.stick_R] = vector2_t.zero;
+      this.states[input_e.select] = button_e.unkown;
+      this.states[input_e.start] = button_e.unkown;
+      this.states[input_e.X] = button_e.unkown;
+    }
+    // true if button is pressed and pressing
+    is_button_press(button: input_e) { return this.states[button] > button_e.unkown; }
+  }
+
+  export class input_manager_t extends game_component {
+    constructor() {
+      super();
+      document.addEventListener('keydown', (e: KeyboardEvent) => {
+        switch(e.keyCode)
+        {
+          // v --> button_A
+          case 73: this.set_current_button_state(input_e.button_A); break;
+          // g --> button_B
+          case 74: this.set_current_button_state(input_e.button_B); break;
+          // c --> button_X
+          case 75: this.set_current_button_state(input_e.button_X); break;
+          // f --> button_Y
+          case 76: this.set_current_button_state(input_e.button_Y); break;
+
+          // q --> button_L
+          case 81: this.set_current_button_state(input_e.button_L); break;
+          // e --> button_R
+          case 69: this.set_current_button_state(input_e.button_R); break;
+
+          // 1 --> trigger_L
+          case 49: this.input_state_current[input_e.trigger_L] = 1; break;
+          // 3--> trigger_R
+          case 51: this.input_state_current[input_e.trigger_R] = 1; break;
+
+          // w --> stick_L up
+          case 87: this.input_state_current[input_e.stick_L] = new vector2_t(0, 1); break;
+          // a --> stick_L left
+          case 65: this.input_state_current[input_e.stick_L] = new vector2_t(-1, 0); break;
+          // s --> stick_L down
+          case 83: this.input_state_current[input_e.stick_L] = new vector2_t(0, -1); break;
+          // d --> stick_L right
+          case 68: this.input_state_current[input_e.stick_L] = new vector2_t(1, 0); break;
+
+          // i --> stick_R up
+          case 73: this.input_state_current[input_e.stick_R] = new vector2_t(0, 1); break;
+          // j --> stick_R left
+          case 74: this.input_state_current[input_e.stick_R] = new vector2_t(-1, 0); break;
+          // k --> stick_R down
+          case 75: this.input_state_current[input_e.stick_R] = new vector2_t(0, -1); break;
+          // l --> stick_R right
+          case 76: this.input_state_current[input_e.stick_R] = new vector2_t(1, 0); break;
+
+          // num 8 --> POV up
+          case 104: this.input_state_current[input_e.pov] = pov_e.up; break;
+          // num 9 --> POV up right
+          case 105: this.input_state_current[input_e.pov] = pov_e.up_right; break;
+          // num 6 --> POV right
+          case 102: this.input_state_current[input_e.pov] = pov_e.right; break;
+          // num 3 --> POV down right
+          case 99: this.input_state_current[input_e.pov] = pov_e.down_right; break;
+          // num 2 --> POV down
+          case 98: this.input_state_current[input_e.pov] = pov_e.down; break;
+          // num 1 --> POV down left
+          case 97: this.input_state_current[input_e.pov] = pov_e.down_left; break;
+          // num 4 --> POV left
+          case 100: this.input_state_current[input_e.pov] = pov_e.left; break;
+          // num 7 --> POV up left
+          case 103: this.input_state_current[input_e.pov] = pov_e.up_left; break;
+        }
+      });
+    }
+
+    // for internal; set current button state helper method
+    private set_current_button_state(button: input_e) {
+      return this.input_state_current[button]
+        = this.input_state_before.is_button_press(button)
+        ? button_e.pressed
+        : button_e.pressing;
+    }
+
+    // get delta value from before to current for sticks and triggers
+    get_delta_value(value_device: input_e) { return vector2_t.sub(this.input_state_current[value_device], this.input_state_before[value_device]); }
+
+    // update order; super high priority
+    update_order = order_priority.super_high;
+
+    // update
+    update(game_time: game_time_t) {
+      // refresh input_state_before
+      this.input_state_before = this.input_state_current;
+      
+      // update current state
+      // ToDo: 1. user key assign configuration
+      // ToDo: 2. support W3C Gamepad API
+      this.input_state_current[input_e.button_A] = button_e.unkown;
+      this.input_state_current[input_e.button_B] = button_e.unkown;
+      this.input_state_current[input_e.button_X] = button_e.unkown;
+      this.input_state_current[input_e.button_Y] = button_e.unkown;
+      this.input_state_current[input_e.button_L] = button_e.unkown;
+      this.input_state_current[input_e.button_R] = button_e.unkown;
+      this.input_state_current[input_e.trigger_L] = 0;
+      this.input_state_current[input_e.trigger_R] = 0;
+      this.input_state_current[input_e.pov] = pov_e.none;
+      this.input_state_current[input_e.stick_L] = vector2_t.zero;
+      this.input_state_current[input_e.stick_R] = vector2_t.zero;
+      this.input_state_current[input_e.select] = button_e.unkown;
+      this.input_state_current[input_e.start] = button_e.unkown;
+      this.input_state_current[input_e.X] = button_e.unkown;
+    }
+
+    // for internal; input state
+    private input_state_current: input_state_t;
+    private input_state_before: input_state_t;
+  }
+
 }
