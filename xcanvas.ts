@@ -75,9 +75,9 @@ module xcanvas {
     enabled = true;
 
     // implementation of get_update_order
-    update_order = 0;
+    update_order = order_priority.medium;
     // implementation of get_draw_order
-    draw_order = 0;
+    draw_order = order_priority.medium;
   }
 
   // drawable_game_component class
@@ -384,7 +384,7 @@ module xcanvas {
     constructor(bounding: bounding_t) { super(); this.bounding = bounding; }
 
     force = vector2_t.zero;
-    update_order = -10;
+    update_order = order_priority.high;
     
     bounding: bounding_t;
 
