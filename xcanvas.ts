@@ -394,4 +394,47 @@ module xcanvas {
     }
   }
 
+  // content type
+  export enum content_type_e {
+    audio,
+    image
+  }
+
+  // content class; want abstract class
+  export class content_t {
+    private content_type_: content_type_e;
+    private content_: HTMLElement;
+    private source_url_: string;
+
+    get content_type() { return this.content_type_; }
+    get content() { return this.content_; }
+    get source_url() { return this.source_url_; }
+
+    constructor(content_type: content_type_e, source_url: string) {
+      // content_type
+      this.content_type_ = content_type;
+      // content
+      switch(content_type)
+      {
+        // audio
+        case content_type_e.audio:
+          var a = new HTMLAudioElement();
+          a.src = source_url;
+          this.content_ = a;
+          break;
+        // image
+        case content_type_e.image:
+          var i = new HTMLImageElement();
+          i.src = source_url;
+          this.content_ = i;
+          break;
+        // unknown
+        default:
+          throw 'logic error; unkown content type';
+      }
+      // source_url
+      this.source_url_ = source_url;
+    }
+  }
+
 }
