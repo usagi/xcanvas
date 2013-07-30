@@ -15,7 +15,7 @@ module xcanvas {
   // draw interface
   export interface drawable_i {
     // call from game class at every draw timing
-    draw(game_time: game_time_t);
+    draw(game_time: game_time_t, draw_target_context: CanvasRenderingContext2D);
     // game class is not call draw if it is false
     get_enabled(): boolean;
     // draw sorting order; small value to a fast draw
@@ -82,11 +82,15 @@ module xcanvas {
 
   // drawable_game_component class
   export class drawable_game_component extends game_component implements drawable_i {
-    draw(game_time: game_time_t) { }
+    draw(game_time: game_time_t, draw_target_context: CanvasRenderingContext2D) { }
   }
 
   // game class
   export class game_t {
+    constructor(draw_target_context: CanvasRenderingContext2D) { this.draw_target_context = draw_target_context; }
+
+    private draw_target_context: CanvasRenderingContext2D;
+
     // the set of the game component
     components: Array<game_component>;
 
@@ -166,7 +170,7 @@ module xcanvas {
     draw() {
       this.components
         .filter((v: any) => v.draw instanceof Function)
-        .forEach((v: any) => v.draw(this.game_time));
+        .forEach((v: any) => v.draw(this.game_time, this.draw_target_context));
       setTimeout(this.draw, this.target_elapsed_time.getTime());
     }
   }
@@ -227,6 +231,30 @@ module xcanvas {
     }
     // position
     position = vector2_t.zero;
+    // default draw; visualize bounding with red stroke 
+    draw(game_time: game_time_t, draw_target_context: CanvasRenderingContext2D) {
+      // ToDo: change to use camera with Issue #11
+      draw_target_context.translate(this.position.x, this.position.y);
+
+      draw_target_context.strokeStyle = 'red';
+
+      switch(this.bounding.bounding_type)
+      {
+        case bounding_type_e.point:
+          //draw_target_context.rect(0, 0, 0, 0);
+          break;
+        case bounding_type_e.circle:
+          var c = <bounding_circle_t>this.bounding;
+          draw_target_context.arc(c.center.x, c.center.y, c.radius, 0, 2 * Math.PI);
+          break;
+        case bounding_type_e.box:
+          var b = <bounding_box_t>this.bounding;
+          draw_target_context.rect(b.point_left_top.x, b.point_right_bottom.y, b.point_right_bottom.x, b.point_right_bottom.y);
+          break;
+      }
+
+      draw_target_context.stroke();
+    }
   }
 
   // common object; it has velocity, position, mass and bounding
