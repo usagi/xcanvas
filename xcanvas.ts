@@ -128,11 +128,20 @@ module xcanvas {
     // run the game
     run() {
       this.initialize_timers();
-      
+      this.request_animation_frame();
+      return this;
+    }
+
+    // for internal; helper metohd to call the requestAnimationFrame API
+    private request_animation_frame() {
+      var r = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
+      r(this.animation_frame);
+    }
+
+    // for internal; callback for requestAnimationFrame API
+    animation_frame() {
       this.update();
       this.draw();
-      
-      return this;
     }
 
     // it is true if frame rate to slowly
