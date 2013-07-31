@@ -1,0 +1,4 @@
+rule compile
+  command = tsc -c -b -m --target ES5 --out $out $in
+
+build bin/xcanvas.js: compile xcanvas.ts
