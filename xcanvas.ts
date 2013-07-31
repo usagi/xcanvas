@@ -151,8 +151,8 @@ module xcanvas {
       this.total_game_time_ = new Date(this.total_game_time_.getTime() + this.target_elapsed_time.getTime());
       // update components
       this.components
-        .filter(v=> v.get_enabled())
-        .forEach(v => v.update(this.game_time));
+        .filter((v: game_component) => v.enabled)
+        .forEach((v: game_component) => v.update(this.game_time));
       // calc the time of the current method elapsed
       var current_elapsed_time = new Date().getTime() - time_update_started.getTime();
       // load member property to local storage
@@ -664,7 +664,7 @@ module xcanvas {
       var current_components = this.game.components;
       this.last_scene.components = [];
       this.game.components = [];
-      current_components.forEach(c => {
+      current_components.forEach((c: game_component) => {
         if (c.is_persistent)
           this.game.components.push(c);
         else
@@ -688,7 +688,7 @@ module xcanvas {
 
       // filter and concat game components with resuming scene
       this.game.components
-        .filter(c => c.is_persistent)
+        .filter((c: game_component) => c.is_persistent)
         .concat(this.last_scene)
       ;
 
