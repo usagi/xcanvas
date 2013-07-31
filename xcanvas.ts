@@ -128,10 +128,20 @@ module xcanvas {
       return this;
     }
 
+    // to exit the game
+    exit() { this.cancel_animation_frame(); }
+
+    animation_request_id: number;
+
     // for internal; helper metohd to call the requestAnimationFrame API
     private request_animation_frame() {
       var r = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
-      r(this.animation_frame);
+      this.animation_request_id = r(this.animation_frame);
+    }
+
+    private cancel_animation_frame() {
+      var c = window.cancelAnimationFrame || window.mozCancelAnimationFrame || window.webkitCancelAnimationFrame || window.msCancelAnimationFrame;
+      c(this.animation_request_id);
     }
 
     // for internal; callback for requestAnimationFrame API
