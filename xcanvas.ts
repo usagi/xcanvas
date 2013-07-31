@@ -57,6 +57,13 @@ module xcanvas {
     get total_game_time() { return this.game.total_game_time; }
     // get the time span from the game start to current calling in the real time
     get total_real_time() { return new Date(new Date().getTime() - this.start_time.getTime()); }
+
+    // get the elapse_game_time in [sec]
+    get elapsed_game_time_in_seconds() { return helper.get_total_seconds(this.elapsed_game_time); }
+    // get the total_game_time in [sec]
+    get total_game_time_in_seconds() { return helper.get_total_seconds(this.total_game_time); }
+    // get the total_real_time in [sec]
+    get total_real_time_in_seconds() { return helper.get_total_seconds(this.total_real_time); }
   }
 
   // game_component interface
@@ -282,7 +289,7 @@ module xcanvas {
     // velocity
     velocity = vector2_t.zero;
     // update; refresh position using velocity and delta-time
-    update(game_time: game_time_t) { this.position.add(vector2_t.mul(this.velocity, game_time.elapsed_game_time.getTime())); }
+    update(game_time: game_time_t) { this.position.add(vector2_t.mul(this.velocity, game_time.elapsed_game_time_in_seconds)); }
   }
 
   // common object; it has acceleration, velocity, position, mass and bounding
@@ -298,7 +305,7 @@ module xcanvas {
       // calc the sum of accelerations
       var sum_acceleration = this.accelerations.reduce((p, c) => vector2_t.add(p, c), vector2_t.zero);
       // update velocity
-      this.velocity.add(vector2_t.mul(sum_acceleration, game_time.elapsed_game_time.getTime()));
+      this.velocity.add(vector2_t.mul(sum_acceleration, game_time.elapsed_game_time_in_seconds));
       // call super object update
       super.update(game_time);
     }
@@ -745,7 +752,7 @@ module xcanvas {
         , delta_position.y - sign(delta_position.y) * this.margin.y
         );
       var velocity = new vector2_t(margined_delta_position.x * this.factor.x, margined_delta_position.y * this.factor.y);
-      this.position = vector2_t.add(this.position, vector2_t.mul(velocity, game_time.elapsed_game_time.getTime() * 1000));
+      this.position = vector2_t.add(this.position, vector2_t.mul(velocity, game_time.elapsed_game_time_in_seconds));
 
       super.update(game_time);
     }
@@ -753,6 +760,7 @@ module xcanvas {
 
   export class helper {
     static createSVGMatrix() { return (<SVGSVGElement>document.createElementNS('http://www.w3.org/2000/svg', 'svg')).createSVGMatrix(); }
+    static get_total_seconds(t: Date) { return t.getTime() * 0.001; }
   }
 
 }
