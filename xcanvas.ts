@@ -7,9 +7,9 @@ module xcanvas {
     // call from game class at every update timing
     update(game_time: game_time_t);
     // game class is not call update if it is false
-    get_enabled(): boolean;
+    enabled: boolean;
     // update sorting order; small value to a fast update
-    get_update_order(): number;
+    update_order: number;
   }
 
   // draw interface
@@ -17,9 +17,9 @@ module xcanvas {
     // call from game class at every draw timing
     draw(game_time: game_time_t, draw_target_context: CanvasRenderingContext2D);
     // game class is not call draw if it is false
-    get_enabled(): boolean;
+    enabled: boolean;
     // draw sorting order; small value to a fast draw
-    get_draw_order(): number;
+    draw_order: number;
   }
 
   // order priority enum for use update_order and draw_order
@@ -70,17 +70,9 @@ module xcanvas {
 
     update(game_time: game_time_t) { }
     
-    get_enabled() { return this.enabled; }
-    
-    get_update_order() { return this.update_order; }
-    get_draw_order() { return this.draw_order; }
-
-    // implementation of get_enabled
     enabled = true;
 
-    // implementation of get_update_order
     update_order = order_priority.medium;
-    // implementation of get_draw_order
     draw_order = order_priority.medium;
   }
 
