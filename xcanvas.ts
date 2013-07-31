@@ -682,4 +682,51 @@ module xcanvas {
     poped() { }
     components: Array<game_component>;
   }
+
+  export class camera_t extends game_component {
+    position = vector2_t.zero;
+
+    get transform_matrix() {
+      var t = helper.createSVGMatrix();
+      t.translate(this.position.x, this.position.y);
+      return t;
+    }
+  }
+
+  export class tracking_camera_t extends camera_t {
+    // target: tracking target object
+    // offset: tracking position offset
+    // margin: tracking position margin
+    // factor: tracking velocity factor;
+    constructor(target: position_object_t, offset = vector2_t.zero, margin = vector2_t.zero, factor = vector2_t.unit) {
+      super();
+      this.target = target;
+      this.offset = offset;
+      this.margin = margin;
+      this.factor = factor;
+    }
+
+    target: position_object_t;
+
+    offset: vector2_t;
+    margin: vector2_t;
+    factor: vector2_t;
+
+    update(game_time: game_time_t) {
+      var offseted_target_position = vector2_t.add(this.target.position, this.offset);
+      var delta_position = vector2_t.sub(offseted_target_position, this.position);
+      var sign = (v: number) => (v > 0) ? 1 : -1;
+      var margined_delta_position = new vector2_t
+        ( delta_position.x - sign(delta_position.x) * this.margin.x
+        , delta_position.y - sign(delta_position.y) * this.margin.y
+        );
+      var velocity = new vector2_t(margined_delta_position.x * this.factor.x, margined_delta_position.y * this.factor.y);
+      this.position = vector2_t.add(this.position, vector2_t.mul(velocity, game_time.elapsed_game_time.getTime() * 1000));
+    }
+  }
+
+  export class helper {
+    static createSVGMatrix() { return (<SVGSVGElement>document.createElementNS('http://www.w3.org/2000/svg', 'svg')).createSVGMatrix(); }
+  }
+
 }
