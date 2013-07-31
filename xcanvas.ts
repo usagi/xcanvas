@@ -159,8 +159,8 @@ module xcanvas {
       this.total_game_time_ = new Date(this.total_game_time_.getTime() + this.target_elapsed_time.getTime());
       // update components
       this.components
-        .filter((v)=> v.get_enabled())
-        .forEach((v) => v.update(this.game_time));
+        .filter(v=> v.get_enabled())
+        .forEach(v => v.update(this.game_time));
       // calc the time of the current method elapsed
       var current_elapsed_time = new Date().getTime() - time_update_started.getTime();
       // load member property to local storage
