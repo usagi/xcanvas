@@ -60,10 +60,14 @@ module xcanvas {
   }
 
   // game_component interface
-  export interface game_component_i { }
+  export interface game_component_i {
+    is_persistent: boolean;
+  }
 
   // game_component class
   export class game_component implements game_component_i, updatable_i {
+    get is_persistent() { return false; }
+
     update(game_time: game_time_t) { }
     
     get_enabled() { return this.enabled; }
@@ -602,6 +606,8 @@ module xcanvas {
       });
     }
 
+    get is_persistent() { return true; }
+
     // for internal; set current button state helper method
     private set_current_button_state(button: input_e) {
       return this.input_state_current[button]
@@ -645,4 +651,87 @@ module xcanvas {
     private input_state_before: input_state_t;
   }
 
+  export class scene_manager_t extends game_component {
+    constructor(game: game_t, default_scene: scene_t) {
+      super();
+      this.game = game;
+      this.default_scene = default_scene;
+    }
+
+    get is_persistent() { return true; }
+
+    game: game_t;
+    default_scene: scene_t;
+
+    private scene_stack: Array<scene_t> = [];
+
+    private get last_scene() { return this.scene_stack.slice(-1)[0]; }
+    
+    push(scene: scene_t) {
+      // store current scene components
+      var current_components = this.game.components;
+      this.last_scene.components = [];
+      this.game.components = [];
+      current_components.forEach(c => {
+        if (c.is_persistent)
+          this.game.components.push(c);
+        else
+          this.last_scene.components.push(c);
+      });
+      
+      // suspend current scene
+      this.last_scene.suspend();
+
+      // push new scene
+      this.scene_stack.push(scene);
+
+      // load components to new scne
+      this.game.components.concat(this.last_scene.components);
+      this.last_scene.components = this.game.components;
+    }
+
+    pop() {
+      // pop a current scene
+      this.scene_stack.pop().poped();
+
+      // filter and concat game components with resuming scene
+      this.game.components
+        .filter(c => c.is_persistent)
+        .concat(this.last_scene)
+      ;
+
+      // resuming scene
+      this.last_scene.resume();
+    }
+
+    upgate(game_time: game_time_t) {
+      if (this.scene_stack.length === 0) {
+        this.push(this.default_scene.initialize());
+      }
+    }
+  }
+
+  export interface scene_i extends game_component_i {
+    // scene initializer
+    initialize(): scene_i;
+    // call on scene resume timing
+    resume();
+    // call on scene suspend timing
+    suspend();
+    // call on scene pushed timing
+    pushed();
+    // call on scene poped timing
+    poped();
+    // current game.components in active scene
+    components: Array<game_component>;
+  }
+
+  export class scene_t extends game_component implements scene_i {
+    initialize() { return this; }
+    resume() { }
+    suspend() { }
+    pushed() { }
+    poped() { }
+    components: Array<game_component>;
+  }
 }
