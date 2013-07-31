@@ -293,7 +293,7 @@ module xcanvas {
   }
 
   // common object; it has acceleration, velocity, position, mass and bounding
-  export class accelerate_object_t extends velocity_object_t {
+  export class acceleration_object_t extends velocity_object_t {
     constructor(mass: number = 0, bounding: bounding_t = bounding_t.none, position: vector2_t = vector2_t.zero, velocity: vector2_t = vector2_t.zero, accelerations: Array<vector2_t> = []) {
       super(mass, bounding, position, velocity);
       this.accelerations = accelerations;
@@ -439,7 +439,7 @@ module xcanvas {
     
     bounding: bounding_t;
 
-    apply(object: accelerate_object_t) {
+    apply(object: acceleration_object_t) {
       if (this.bounding.intercept(object.bounding))
         object.accelerations.push(vector2_t.div(this.force, object.mass));
     }
