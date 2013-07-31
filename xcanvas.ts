@@ -102,6 +102,9 @@ module xcanvas {
     // for internal; game_time for update and draw
     private game_time: game_time_t;
 
+    // for internal; transform martix
+    transform_matrix = helper.createSVGMatrix();
+
     // get the time at the started
     get start_time() { return this.start_time_; }
     // get the time span of a total game time
@@ -175,7 +178,16 @@ module xcanvas {
     draw() {
       this.components
         .filter((v: any) => v.draw instanceof Function)
-        .forEach((v: any) => v.draw(this.game_time, this.draw_target_context));
+        .forEach((v: any) => {
+            this.draw_target_context.save();
+            this.draw_target_context.transform
+              ( this.transform_matrix.a, this.transform_matrix.b, this.transform_matrix.c
+              , this.transform_matrix.d, this.transform_matrix.e, this.transform_matrix.f
+              );
+            v.draw(this.game_time, this.draw_target_context)
+            this.draw_target_context.restore();
+          }
+        );
     }
   }
 
@@ -684,7 +696,19 @@ module xcanvas {
   }
 
   export class camera_t extends game_component {
+    constructor(game: game_t) {
+      super();
+      this.game = game;
+    }
+
+    game: game_t;
     position = vector2_t.zero;
+
+    get update_order() { return order_priority.super_high; }
+
+    update(game_time: game_time_t) {
+      this.game.transform_matrix = this.transform_matrix;
+    }
 
     get transform_matrix() {
       var t = helper.createSVGMatrix();
@@ -698,8 +722,8 @@ module xcanvas {
     // offset: tracking position offset
     // margin: tracking position margin
     // factor: tracking velocity factor;
-    constructor(target: position_object_t, offset = vector2_t.zero, margin = vector2_t.zero, factor = vector2_t.unit) {
-      super();
+    constructor(game: game_t,target: position_object_t, offset = vector2_t.zero, margin = vector2_t.zero, factor = vector2_t.unit) {
+      super(game);
       this.target = target;
       this.offset = offset;
       this.margin = margin;
@@ -722,6 +746,8 @@ module xcanvas {
         );
       var velocity = new vector2_t(margined_delta_position.x * this.factor.x, margined_delta_position.y * this.factor.y);
       this.position = vector2_t.add(this.position, vector2_t.mul(velocity, game_time.elapsed_game_time.getTime() * 1000));
+
+      super.update(game_time);
     }
   }
 
