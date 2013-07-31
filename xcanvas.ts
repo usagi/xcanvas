@@ -445,6 +445,35 @@ module xcanvas {
     }
   }
 
+  // collision interface
+  export interface collision_i {
+    collision(target: collision_i);
+  }
+
+  export class collision_manager extends game_component {
+    constructor(game: game_t) {
+      super();
+      this.game = game;
+    }
+
+    private game: game_t;
+
+    get update_order() { return order_priority.very_high; }
+
+    update(game_time: game_time_t) {
+      this.game.components
+        .filter((c: any) => c.collision)
+        .forEach((c, c_i, s) => {
+          for (var t_i in s) {
+            var c_ = <collision_i><any>c;
+            var t_ = <collision_i><any>s[t_i];
+            c_.collision(t_);
+            t_.collision(c_);
+          }
+        });
+    }
+  }
+
   // input devices; convertible to modern game controllers
   export enum input_e {
     // A, B
