@@ -158,25 +158,14 @@ module xcanvas {
       // load member property to local storage
       var target_elapsed_time = this.target_elapsed_time.getTime();
       // is running slowly?
-      if (current_elapsed_time > target_elapsed_time)
-      {
-        // slowly
-        this.is_running_slowly = true;
-        setTimeout(this.update, 0);
-      } else {
-        // not slowly
-        this.is_running_slowly = false;
-        setTimeout(this.update, target_elapsed_time - current_elapsed_time);
-      }
+      this.is_running_slowly = current_elapsed_time > target_elapsed_time;
     }
 
-    // update; component to call update if it is enabled and it has draw method
-    // ToDo: impl is_running_slowly
+    // draw; component to call update if it is enabled and it has draw method
     draw() {
       this.components
         .filter((v: any) => v.draw instanceof Function)
         .forEach((v: any) => v.draw(this.game_time, this.draw_target_context));
-      setTimeout(this.draw, this.target_elapsed_time.getTime());
     }
   }
 
