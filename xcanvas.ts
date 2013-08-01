@@ -146,7 +146,7 @@ module xcanvas {
     // for internal; helper metohd to call the requestAnimationFrame API
     private request_animation_frame() {
       var r = window.requestAnimationFrame || (<any>window).mozRequestAnimationFrame || (<any>window).webkitRequestAnimationFrame || (<any>window).msRequestAnimationFrame;
-      this.animation_request_id = r(this.animation_frame);
+      this.animation_request_id = r(this.animation_frame.bind(this));
     }
 
     private cancel_animation_frame() {
