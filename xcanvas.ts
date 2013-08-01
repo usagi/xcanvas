@@ -95,7 +95,7 @@ module xcanvas {
     private draw_target_context: CanvasRenderingContext2D;
 
     // the set of the game component
-    components: Array<game_component>;
+    components: Array<game_component> = [];
 
     // the flag of fixed framerating
     // note: false is not support for ever
@@ -728,7 +728,7 @@ module xcanvas {
     suspend() { }
     pushed() { }
     poped() { }
-    components: Array<game_component>;
+    components: Array<game_component> = [];
   }
 
   export class camera_t extends game_component {
