@@ -145,12 +145,12 @@ module xcanvas {
 
     // for internal; helper metohd to call the requestAnimationFrame API
     private request_animation_frame() {
-      var r = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
+      var r = window.requestAnimationFrame || (<any>window).mozRequestAnimationFrame || (<any>window).webkitRequestAnimationFrame || (<any>window).msRequestAnimationFrame;
       this.animation_request_id = r(this.animation_frame);
     }
 
     private cancel_animation_frame() {
-      var c = window.cancelAnimationFrame || window.mozCancelAnimationFrame || window.webkitCancelAnimationFrame || window.msCancelAnimationFrame;
+      var c = window.cancelAnimationFrame || (<any>window).mozCancelAnimationFrame || (<any>window).webkitCancelAnimationFrame || (<any>window).msCancelAnimationFrame;
       c(this.animation_request_id);
     }
 
