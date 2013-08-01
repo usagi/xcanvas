@@ -158,6 +158,7 @@ module xcanvas {
     animation_frame() {
       this.update();
       this.draw();
+      this.request_animation_frame();
     }
 
     // it is true if frame rate to slowly
