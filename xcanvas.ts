@@ -696,7 +696,7 @@ module xcanvas {
     // set scene property
     private set_scene_property(scene: scene_t){
       scene.game = this.game;
-      scene.scene_manager = this.scene_manager;
+      scene.scene_manager = this;
     }
 
     push(scene: scene_t) {
