@@ -570,6 +570,11 @@ module xcanvas {
   export class input_manager_t extends game_component {
     constructor() {
       super();
+
+      this.input_state_before = new input_state_t();
+      this.input_state_current = new input_state_t();
+      this.input_state_next = new input_state_t();
+
       document.addEventListener('keydown', (e: KeyboardEvent) => {
         switch(e.keyCode)
         {
@@ -657,7 +662,7 @@ module xcanvas {
     }
 
     // for internal; initialize next button state
-    private initialize_next_button_states(){
+    private initialize_next_button_state(){
       this.initialize_next_button_helper(input_e.button_A);
       this.initialize_next_button_helper(input_e.button_B);
       this.initialize_next_button_helper(input_e.button_X);
@@ -696,7 +701,7 @@ module xcanvas {
       // refresh input_state_before
       this.input_state_before = this.input_state_current;
       this.input_state_current = this.input_state_next;
-      this.initialize_next_button_states();
+      this.initialize_next_button_state();
     }
 
     // for internal; input state
