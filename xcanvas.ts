@@ -702,7 +702,7 @@ module xcanvas {
 
     // for internal; input state
     private input_state_next: input_state_t;
-    private input_states: Array<input_state> = [];
+    private input_states: Array<input_state_t> = [];
     private input_states_size = 16;
     
     // get input state in delta frame
