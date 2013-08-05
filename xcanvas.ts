@@ -714,7 +714,7 @@ module xcanvas {
     }
     
     // get delta value from before to current for sticks and triggers in delta frame
-    get delta_value(value_device: input_e, delta_frame = 0) {
+    get delta(value_device: input_e, delta_frame = 0) {
       if(delta_frame >= input_states_size - 1 || delta_frame < 0)
         throw 'logic error: out of index';
       
