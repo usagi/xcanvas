@@ -715,8 +715,7 @@ module xcanvas {
       super();
       this.game = game;
       this.default_scene = default_scene;
-      // set scene property
-      this.set_scene_property(default_scene);
+      this.push(default_scene);
     }
 
     get is_persistent() { return true; }
@@ -735,19 +734,24 @@ module xcanvas {
     }
 
     push(scene: scene_t) {
+      // test; is not first scene
+      var is_not_first_scene = this.scene_stack.length > 0;
+
       // store current scene components
       var current_components = this.game.components;
-      this.last_scene.components = [];
+      if(is_not_first_scene)
+        this.last_scene.components = [];
       this.game.components = [];
       current_components.forEach((c: game_component) => {
         if (c.is_persistent)
           this.game.components.push(c);
-        else
+        else if (is_not_first_scene)
           this.last_scene.components.push(c);
       });
       
       // suspend current scene
-      this.last_scene.suspend();
+      if(is_not_first_scene)
+        this.last_scene.suspend();
 
       // set scene_property
       this.set_scene_property(scene);
@@ -761,6 +765,9 @@ module xcanvas {
     }
 
     pop() {
+      if(this.scene_stack.length === 1)
+        throw "logic error: can not pop default scene";
+
       // pop a current scene
       this.scene_stack.pop().poped();
 
@@ -774,10 +781,8 @@ module xcanvas {
       this.last_scene.resume();
     }
 
-    upgate(game_time: game_time_t) {
-      if (this.scene_stack.length === 0) {
-        this.push(this.default_scene.initialize());
-      }
+    update(game_time: game_time_t) {
+      this.last_scene.update(game_time);
     }
   }
 
