@@ -259,6 +259,10 @@ module xcanvas {
     static get zero() { return new vector2_t(0, 0); }
     // get the unit vector
     static get unit() { return new vector2_t(1, 1); }
+    // generate clone object
+    clone() {
+      return new vector2_t(this.x, this.y);
+    }
   }
 
   // common object; it has mass and volume(bounding)
@@ -547,24 +551,64 @@ module xcanvas {
   // input state for use input state snapshot
   export class input_state_t {
     states = [];
-    constructor() {
-      this.states[input_e.button_A] = button_e.unkown;
-      this.states[input_e.button_B] = button_e.unkown;
-      this.states[input_e.button_X] = button_e.unkown;
-      this.states[input_e.button_Y] = button_e.unkown;
-      this.states[input_e.button_L] = button_e.unkown;
-      this.states[input_e.button_R] = button_e.unkown;
-      this.states[input_e.trigger_L] = 0;
-      this.states[input_e.trigger_R] = 0;
-      this.states[input_e.pov] = pov_e.none;
-      this.states[input_e.stick_L] = vector2_t.zero;
-      this.states[input_e.stick_R] = vector2_t.zero;
-      this.states[input_e.select] = button_e.unkown;
-      this.states[input_e.start] = button_e.unkown;
-      this.states[input_e.X] = button_e.unkown;
+    constructor
+      ( button_A = button_e.unkown
+      , button_B = button_e.unkown
+      , button_X = button_e.unkown
+      , button_Y = button_e.unkown
+      , button_L = button_e.unkown
+      , button_R = button_e.unkown
+      , trigger_L = 0
+      , trigger_R = 0
+      , pov = pov_e.none
+      , stick_L = vector2_t.zero
+      , stick_R = vector2_t.zero
+      , select = button_e.unkown
+      , start = button_e.unkown
+      , X = button_e.unkown
+      )
+    {
+      this.states[input_e.button_A] = button_A;
+      this.states[input_e.button_B] = button_B;
+      this.states[input_e.button_X] = button_X;
+      this.states[input_e.button_Y] = button_Y;
+      this.states[input_e.button_L] = button_L;
+      this.states[input_e.button_R] = button_R;
+      this.states[input_e.trigger_L] = trigger_L;
+      this.states[input_e.trigger_R] = trigger_R;
+      this.states[input_e.pov] = pov;
+      this.states[input_e.stick_L] = stick_L;
+      this.states[input_e.stick_R] = stick_R;
+      this.states[input_e.select] = select;
+      this.states[input_e.start] = start;
+      this.states[input_e.X] = X;
     }
+    
     // true if button is pressed and pressing
-    is_button_press(button: input_e) { return this.states[button] > button_e.unkown; }
+    is_button_press(button: input_e) {
+      return this.states[button] > button_e.unkown;
+    }
+
+    // generate clone object
+    clone()
+    {
+      return new input_state_t
+        ( this.states[input_e.button_A]
+        , this.states[input_e.button_B]
+        , this.states[input_e.button_X]
+        , this.states[input_e.button_Y]
+        , this.states[input_e.button_L]
+        , this.states[input_e.button_R]
+        , this.states[input_e.trigger_L]
+        , this.states[input_e.trigger_R]
+        , this.states[input_e.pov]
+        , this.states[input_e.stick_L].clone()
+        , this.states[input_e.stick_R].clone()
+        , this[input_e.select]
+        , this[input_e.start]
+        , this[input_e.X]
+        );
+    }
   }
 
   export class input_manager_t extends game_component {
@@ -579,13 +623,13 @@ module xcanvas {
         switch(e.keyCode)
         {
           // v --> button_A
-          case 73: this.set_next_button_state(input_e.button_A); break;
+          case 86: this.set_next_button_state(input_e.button_A); break;
           // g --> button_B
-          case 74: this.set_next_button_state(input_e.button_B); break;
+          case 71: this.set_next_button_state(input_e.button_B); break;
           // c --> button_X
-          case 75: this.set_next_button_state(input_e.button_X); break;
+          case 67: this.set_next_button_state(input_e.button_X); break;
           // f --> button_Y
-          case 76: this.set_next_button_state(input_e.button_Y); break;
+          case 70: this.set_next_button_state(input_e.button_Y); break;
 
           // q --> button_L
           case 81: this.set_next_button_state(input_e.button_L); break;
@@ -641,18 +685,65 @@ module xcanvas {
           case 103: this.input_state_next[input_e.pov] = pov_e.up_left; break;
         }
       });
+      
+      document.addEventListener('keyup', (e: KeyboardEvent) => {
+        switch(e.keyCode)
+        {
+          case 86: this.set_next_button_state(input_e.button_A, false); break;
+          case 71: this.set_next_button_state(input_e.button_B, false); break;
+          case 67: this.set_next_button_state(input_e.button_X, false); break;
+          case 70: this.set_next_button_state(input_e.button_Y, false); break;
+
+          case 81: this.set_next_button_state(input_e.button_L, false); break;
+          case 69: this.set_next_button_state(input_e.button_R, false); break;
+
+          case 49: this.input_state_next[input_e.trigger_L] = 0; break;
+          case 51: this.input_state_next[input_e.trigger_R] = 0; break;
+
+          case 55: this.set_next_button_state(input_e.select, false); break;
+          case 57: this.set_next_button_state(input_e.start, false); break;
+          
+          case 56: this.set_next_button_state(input_e.X, false); break;
+
+          case 87:
+          case 65:
+          case 83:
+          case 68:
+            this.input_state_next[input_e.stick_L] = vector2_t.zero;
+            break;
+
+          case 73:
+          case 74:
+          case 75:
+          case 76:
+            this.input_state_next[input_e.stick_R] = vector2_t.zero;
+            break;
+
+          case 104:
+          case 105:
+          case 102:
+          case 99:
+          case 98:
+          case 97:
+          case 100:
+          case 103:
+            this.input_state_next[input_e.pov] = pov_e.none;
+            break;
+        }
+      });
     }
 
     get is_persistent() { return true; }
 
     // for internal; set next button state helper method
-    private set_next_button_state(button: input_e) {
+    private set_next_button_state(button: input_e, is_press = true) {
       this.input_state_next[button]
         = this.input_states[1].is_button_press(button)
-        ? button_e.pressed
-        : button_e.pressing;
+        ? (is_press ? button_e.pressed : button_e.releasing)
+        : (is_press ? button_e.pressing: button_e.released)
+        ;
     }
-
+    
     // for internal; call from initialize_next_button_states
     private initialize_next_button_helper(button: input_e){
       this.input_state_next[button] = this.input_states[0].is_button_press(button)
@@ -661,43 +752,13 @@ module xcanvas {
         ;
     }
 
-    // for internal; initialize next button state
-    private initialize_next_button_state(){
-      this.initialize_next_button_helper(input_e.button_A);
-      this.initialize_next_button_helper(input_e.button_B);
-      this.initialize_next_button_helper(input_e.button_X);
-      this.initialize_next_button_helper(input_e.button_Y);
-
-      this.initialize_next_button_helper(input_e.button_L);
-      this.initialize_next_button_helper(input_e.button_R);
-
-      this.initialize_next_button_helper(input_e.select);
-      this.initialize_next_button_helper(input_e.start);
-      
-      this.initialize_next_button_helper(input_e.X);
-
-      this.input_state_next[input_e.trigger_L] = 0;
-      this.input_state_next[input_e.trigger_R] = 0;
-
-      this.input_state_next[input_e.stick_L] = vector2_t.zero;
-      this.input_state_next[input_e.stick_L] = vector2_t.zero;
-      this.input_state_next[input_e.stick_L] = vector2_t.zero;
-      this.input_state_next[input_e.stick_L] = vector2_t.zero;
-      
-      this.input_state_next[input_e.stick_R] = vector2_t.zero;
-      this.input_state_next[input_e.stick_R] = vector2_t.zero;
-      this.input_state_next[input_e.stick_R] = vector2_t.zero;
-      this.input_state_next[input_e.stick_R] = vector2_t.zero;
-    }
-
     // update order; super high priority
     update_order = order_priority.super_high;
 
     // update
     update(game_time: game_time_t) {
-      this.input_states.unshift(this.input_state_next);
+      this.input_states.unshift(this.input_state_next.clone());
       this.input_states.pop();
-      this.initialize_next_button_state();
     }
 
     // for internal; input state
