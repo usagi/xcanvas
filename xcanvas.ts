@@ -574,70 +574,115 @@ module xcanvas {
         switch(e.keyCode)
         {
           // v --> button_A
-          case 73: this.set_current_button_state(input_e.button_A); break;
+          case 73: this.set_next_button_state(input_e.button_A); break;
           // g --> button_B
-          case 74: this.set_current_button_state(input_e.button_B); break;
+          case 74: this.set_next_button_state(input_e.button_B); break;
           // c --> button_X
-          case 75: this.set_current_button_state(input_e.button_X); break;
+          case 75: this.set_next_button_state(input_e.button_X); break;
           // f --> button_Y
-          case 76: this.set_current_button_state(input_e.button_Y); break;
+          case 76: this.set_next_button_state(input_e.button_Y); break;
 
           // q --> button_L
-          case 81: this.set_current_button_state(input_e.button_L); break;
+          case 81: this.set_next_button_state(input_e.button_L); break;
           // e --> button_R
-          case 69: this.set_current_button_state(input_e.button_R); break;
+          case 69: this.set_next_button_state(input_e.button_R); break;
 
           // 1 --> trigger_L
-          case 49: this.input_state_current[input_e.trigger_L] = 1; break;
+          case 49: this.input_state_next[input_e.trigger_L] = 1; break;
           // 3--> trigger_R
-          case 51: this.input_state_current[input_e.trigger_R] = 1; break;
+          case 51: this.input_state_next[input_e.trigger_R] = 1; break;
+
+          // 7 --> button_select
+          case 55: this.set_next_button_state(input_e.select); break;
+          // 9--> button_start
+          case 57: this.set_next_button_state(input_e.start); break;
+          
+          // 8--> button_X
+          case 56: this.set_next_button_state(input_e.X); break;
 
           // w --> stick_L up
-          case 87: this.input_state_current[input_e.stick_L] = new vector2_t(0, 1); break;
+          case 87: this.input_state_next[input_e.stick_L] = new vector2_t(0, 1); break;
           // a --> stick_L left
-          case 65: this.input_state_current[input_e.stick_L] = new vector2_t(-1, 0); break;
+          case 65: this.input_state_next[input_e.stick_L] = new vector2_t(-1, 0); break;
           // s --> stick_L down
-          case 83: this.input_state_current[input_e.stick_L] = new vector2_t(0, -1); break;
+          case 83: this.input_state_next[input_e.stick_L] = new vector2_t(0, -1); break;
           // d --> stick_L right
-          case 68: this.input_state_current[input_e.stick_L] = new vector2_t(1, 0); break;
+          case 68: this.input_state_next[input_e.stick_L] = new vector2_t(1, 0); break;
 
           // i --> stick_R up
-          case 73: this.input_state_current[input_e.stick_R] = new vector2_t(0, 1); break;
+          case 73: this.input_state_next[input_e.stick_R] = new vector2_t(0, 1); break;
           // j --> stick_R left
-          case 74: this.input_state_current[input_e.stick_R] = new vector2_t(-1, 0); break;
+          case 74: this.input_state_next[input_e.stick_R] = new vector2_t(-1, 0); break;
           // k --> stick_R down
-          case 75: this.input_state_current[input_e.stick_R] = new vector2_t(0, -1); break;
+          case 75: this.input_state_next[input_e.stick_R] = new vector2_t(0, -1); break;
           // l --> stick_R right
-          case 76: this.input_state_current[input_e.stick_R] = new vector2_t(1, 0); break;
+          case 76: this.input_state_next[input_e.stick_R] = new vector2_t(1, 0); break;
 
           // num 8 --> POV up
-          case 104: this.input_state_current[input_e.pov] = pov_e.up; break;
+          case 104: this.input_state_next[input_e.pov] = pov_e.up; break;
           // num 9 --> POV up right
-          case 105: this.input_state_current[input_e.pov] = pov_e.up_right; break;
+          case 105: this.input_state_next[input_e.pov] = pov_e.up_right; break;
           // num 6 --> POV right
-          case 102: this.input_state_current[input_e.pov] = pov_e.right; break;
+          case 102: this.input_state_next[input_e.pov] = pov_e.right; break;
           // num 3 --> POV down right
-          case 99: this.input_state_current[input_e.pov] = pov_e.down_right; break;
+          case 99: this.input_state_next[input_e.pov] = pov_e.down_right; break;
           // num 2 --> POV down
-          case 98: this.input_state_current[input_e.pov] = pov_e.down; break;
+          case 98: this.input_state_next[input_e.pov] = pov_e.down; break;
           // num 1 --> POV down left
-          case 97: this.input_state_current[input_e.pov] = pov_e.down_left; break;
+          case 97: this.input_state_next[input_e.pov] = pov_e.down_left; break;
           // num 4 --> POV left
-          case 100: this.input_state_current[input_e.pov] = pov_e.left; break;
+          case 100: this.input_state_next[input_e.pov] = pov_e.left; break;
           // num 7 --> POV up left
-          case 103: this.input_state_current[input_e.pov] = pov_e.up_left; break;
+          case 103: this.input_state_next[input_e.pov] = pov_e.up_left; break;
         }
       });
     }
 
     get is_persistent() { return true; }
 
-    // for internal; set current button state helper method
-    private set_current_button_state(button: input_e) {
-      return this.input_state_current[button]
+    // for internal; set next button state helper method
+    private set_next_button_state(button: input_e) {
+      this.input_state_next[button]
         = this.input_state_before.is_button_press(button)
         ? button_e.pressed
         : button_e.pressing;
+    }
+
+    // for internal; call from initialize_next_button_states
+    private initialize_next_button_helper(button: input_e){
+      this.input_state_next[button] = this.input_state_next.is_button_press(button)
+        ? button_e.releasing
+        : button_e.released
+        ;
+    }
+
+    // for internal; initialize next button state
+    private initialize_next_button_states(){
+      this.initialize_next_button_helper(input_e.button_A);
+      this.initialize_next_button_helper(input_e.button_B);
+      this.initialize_next_button_helper(input_e.button_X);
+      this.initialize_next_button_helper(input_e.button_Y);
+
+      this.initialize_next_button_helper(input_e.button_L);
+      this.initialize_next_button_helper(input_e.button_R);
+
+      this.initialize_next_button_helper(input_e.select);
+      this.initialize_next_button_helper(input_e.start);
+      
+      this.initialize_next_button_helper(input_e.X);
+
+      this.input_state_next[input_e.trigger_L] = 0;
+      this.input_state_next[input_e.trigger_R] = 0;
+
+      this.input_state_next[input_e.stick_L] = vector2_t.zero;
+      this.input_state_next[input_e.stick_L] = vector2_t.zero;
+      this.input_state_next[input_e.stick_L] = vector2_t.zero;
+      this.input_state_next[input_e.stick_L] = vector2_t.zero;
+      
+      this.input_state_next[input_e.stick_R] = vector2_t.zero;
+      this.input_state_next[input_e.stick_R] = vector2_t.zero;
+      this.input_state_next[input_e.stick_R] = vector2_t.zero;
+      this.input_state_next[input_e.stick_R] = vector2_t.zero;
     }
 
     // get delta value from before to current for sticks and triggers
@@ -650,27 +695,12 @@ module xcanvas {
     update(game_time: game_time_t) {
       // refresh input_state_before
       this.input_state_before = this.input_state_current;
-      
-      // update current state
-      // ToDo: 1. user key assign configuration
-      // ToDo: 2. support W3C Gamepad API
-      this.input_state_current[input_e.button_A] = button_e.unkown;
-      this.input_state_current[input_e.button_B] = button_e.unkown;
-      this.input_state_current[input_e.button_X] = button_e.unkown;
-      this.input_state_current[input_e.button_Y] = button_e.unkown;
-      this.input_state_current[input_e.button_L] = button_e.unkown;
-      this.input_state_current[input_e.button_R] = button_e.unkown;
-      this.input_state_current[input_e.trigger_L] = 0;
-      this.input_state_current[input_e.trigger_R] = 0;
-      this.input_state_current[input_e.pov] = pov_e.none;
-      this.input_state_current[input_e.stick_L] = vector2_t.zero;
-      this.input_state_current[input_e.stick_R] = vector2_t.zero;
-      this.input_state_current[input_e.select] = button_e.unkown;
-      this.input_state_current[input_e.start] = button_e.unkown;
-      this.input_state_current[input_e.X] = button_e.unkown;
+      this.input_state_current = this.input_state_next;
+      this.initialize_next_button_states();
     }
 
     // for internal; input state
+    private input_state_next: input_state_t;
     private input_state_current: input_state_t;
     private input_state_before: input_state_t;
   }
