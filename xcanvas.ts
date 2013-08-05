@@ -706,7 +706,7 @@ module xcanvas {
     private input_states_size = 16;
     
     // get input state in delta frame
-    get state(delta_frame = 0) {
+    get_state(delta_frame = 0) {
       if(delta_frame >= input_states_size || delta_frame < 0)
         throw 'logic error: out of index';
       
@@ -714,7 +714,7 @@ module xcanvas {
     }
     
     // get delta value from before to current for sticks and triggers in delta frame
-    get delta(value_device: input_e, delta_frame = 0) {
+    get_delta(value_device: input_e, delta_frame = 0) {
       if(delta_frame >= input_states_size - 1 || delta_frame < 0)
         throw 'logic error: out of index';
       
