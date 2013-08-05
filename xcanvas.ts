@@ -117,6 +117,10 @@ module xcanvas {
     // get the time span of a total game time
     get total_game_time() { return this.total_game_time_; }
 
+    initialize(){
+      this.initialize_timers();
+    }
+
     // for internal; initialize timers
     private initialize_timers() {
       this.start_time_ = new Date();
@@ -131,11 +135,34 @@ module xcanvas {
     // set a frame rate in [FPS]
     set target_frames_per_second(value: number) { this.target_elapsed_time = new Date(1000 / value); }
 
+    get is_running() { return this.is_running_; }
+    private is_running_ = false;
+
     // run the game
     run() {
-      this.initialize_timers();
+      if(this.is_running_)
+        throw "logic error: already running";
+      this.is_running_ = true;
+      this.initialize();
       this.request_animation_frame();
       return this;
+    }
+
+    get is_suspended() { return this.is_suspended_; }
+    private is_suspended_ = false;
+
+    suspend() {
+      if(this.is_suspended_)
+        throw "logic error: aleady suspended";
+      this.cancel_animation_frame();
+      this.is_suspended_ = true;
+    }
+
+    resume() {
+      if(!this.is_suspended_)
+        throw "logic error: not suspended";
+      this.is_suspended_ = false;
+      this.request_animation_frame();
     }
 
     // to exit the game
