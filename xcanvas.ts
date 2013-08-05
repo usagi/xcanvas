@@ -637,9 +637,9 @@ module xcanvas {
           case 69: this.set_next_button_state(input_e.button_R); break;
 
           // 1 --> trigger_L
-          case 49: this.input_state_next[input_e.trigger_L] = 1; break;
+          case 49: this.input_state_next.states[input_e.trigger_L] = 1; break;
           // 3--> trigger_R
-          case 51: this.input_state_next[input_e.trigger_R] = 1; break;
+          case 51: this.input_state_next.states[input_e.trigger_R] = 1; break;
 
           // 7 --> button_select
           case 55: this.set_next_button_state(input_e.select); break;
@@ -650,39 +650,39 @@ module xcanvas {
           case 56: this.set_next_button_state(input_e.X); break;
 
           // w --> stick_L up
-          case 87: this.input_state_next[input_e.stick_L] = new vector2_t(0, 1); break;
+          case 87: this.input_state_next.states[input_e.stick_L] = new vector2_t(0, 1); break;
           // a --> stick_L left
-          case 65: this.input_state_next[input_e.stick_L] = new vector2_t(-1, 0); break;
+          case 65: this.input_state_next.states[input_e.stick_L] = new vector2_t(-1, 0); break;
           // s --> stick_L down
-          case 83: this.input_state_next[input_e.stick_L] = new vector2_t(0, -1); break;
+          case 83: this.input_state_next.states[input_e.stick_L] = new vector2_t(0, -1); break;
           // d --> stick_L right
-          case 68: this.input_state_next[input_e.stick_L] = new vector2_t(1, 0); break;
+          case 68: this.input_state_next.states[input_e.stick_L] = new vector2_t(1, 0); break;
 
           // i --> stick_R up
-          case 73: this.input_state_next[input_e.stick_R] = new vector2_t(0, 1); break;
+          case 73: this.input_state_next.states[input_e.stick_R] = new vector2_t(0, 1); break;
           // j --> stick_R left
-          case 74: this.input_state_next[input_e.stick_R] = new vector2_t(-1, 0); break;
+          case 74: this.input_state_next.states[input_e.stick_R] = new vector2_t(-1, 0); break;
           // k --> stick_R down
-          case 75: this.input_state_next[input_e.stick_R] = new vector2_t(0, -1); break;
+          case 75: this.input_state_next.states[input_e.stick_R] = new vector2_t(0, -1); break;
           // l --> stick_R right
-          case 76: this.input_state_next[input_e.stick_R] = new vector2_t(1, 0); break;
+          case 76: this.input_state_next.states[input_e.stick_R] = new vector2_t(1, 0); break;
 
           // num 8 --> POV up
-          case 104: this.input_state_next[input_e.pov] = pov_e.up; break;
+          case 104: this.input_state_next.states[input_e.pov] = pov_e.up; break;
           // num 9 --> POV up right
-          case 105: this.input_state_next[input_e.pov] = pov_e.up_right; break;
+          case 105: this.input_state_next.states[input_e.pov] = pov_e.up_right; break;
           // num 6 --> POV right
-          case 102: this.input_state_next[input_e.pov] = pov_e.right; break;
+          case 102: this.input_state_next.states[input_e.pov] = pov_e.right; break;
           // num 3 --> POV down right
-          case 99: this.input_state_next[input_e.pov] = pov_e.down_right; break;
+          case 99: this.input_state_next.states[input_e.pov] = pov_e.down_right; break;
           // num 2 --> POV down
-          case 98: this.input_state_next[input_e.pov] = pov_e.down; break;
+          case 98: this.input_state_next.states[input_e.pov] = pov_e.down; break;
           // num 1 --> POV down left
-          case 97: this.input_state_next[input_e.pov] = pov_e.down_left; break;
+          case 97: this.input_state_next.states[input_e.pov] = pov_e.down_left; break;
           // num 4 --> POV left
-          case 100: this.input_state_next[input_e.pov] = pov_e.left; break;
+          case 100: this.input_state_next.states[input_e.pov] = pov_e.left; break;
           // num 7 --> POV up left
-          case 103: this.input_state_next[input_e.pov] = pov_e.up_left; break;
+          case 103: this.input_state_next.states[input_e.pov] = pov_e.up_left; break;
         }
       });
       
@@ -697,8 +697,8 @@ module xcanvas {
           case 81: this.set_next_button_state(input_e.button_L, false); break;
           case 69: this.set_next_button_state(input_e.button_R, false); break;
 
-          case 49: this.input_state_next[input_e.trigger_L] = 0; break;
-          case 51: this.input_state_next[input_e.trigger_R] = 0; break;
+          case 49: this.input_state_next.states[input_e.trigger_L] = 0; break;
+          case 51: this.input_state_next.states[input_e.trigger_R] = 0; break;
 
           case 55: this.set_next_button_state(input_e.select, false); break;
           case 57: this.set_next_button_state(input_e.start, false); break;
@@ -709,14 +709,14 @@ module xcanvas {
           case 65:
           case 83:
           case 68:
-            this.input_state_next[input_e.stick_L] = vector2_t.zero;
+            this.input_state_next.states[input_e.stick_L] = vector2_t.zero;
             break;
 
           case 73:
           case 74:
           case 75:
           case 76:
-            this.input_state_next[input_e.stick_R] = vector2_t.zero;
+            this.input_state_next.states[input_e.stick_R] = vector2_t.zero;
             break;
 
           case 104:
@@ -727,7 +727,7 @@ module xcanvas {
           case 97:
           case 100:
           case 103:
-            this.input_state_next[input_e.pov] = pov_e.none;
+            this.input_state_next.states[input_e.pov] = pov_e.none;
             break;
         }
       });
@@ -737,16 +737,16 @@ module xcanvas {
 
     // for internal; set next button state helper method
     private set_next_button_state(button: input_e, is_press = true) {
-      this.input_state_next[button]
-        = this.input_states[1].is_button_press(button)
-        ? (is_press ? button_e.pressed : button_e.releasing)
-        : (is_press ? button_e.pressing: button_e.released)
+      this.input_state_next.states[button]
+        = is_press
+          ? button_e.pressing
+          : button_e.releasing
         ;
     }
     
     // for internal; call from initialize_next_button_states
     private initialize_next_button_helper(button: input_e){
-      this.input_state_next[button] = this.input_states[0].is_button_press(button)
+      this.input_state_next.states[button] = this.input_states[0].is_button_press(button)
         ? button_e.releasing
         : button_e.released
         ;
@@ -757,7 +757,24 @@ module xcanvas {
 
     // update
     update(game_time: game_time_t) {
-      this.input_states.unshift(this.input_state_next.clone());
+      var latest = this.input_state_next.clone();
+      [ input_e.button_A
+      , input_e.button_B
+      , input_e.button_X
+      , input_e.button_Y
+      , input_e.button_L
+      , input_e.button_R
+      , input_e.start
+      , input_e.select
+      , input_e.X
+      ].forEach( (button) => {
+        if(latest.states[button] === button_e.pressing && this.input_states[0].states[button] > 0)
+          latest.states[button] = button_e.pressed;
+        else if(latest.states[button] === button_e.releasing && this.input_states[0].states[button] < 0)
+          latest.states[button] = button_e.released;
+      } );
+      
+      this.input_states.unshift(latest);
       this.input_states.pop();
     }
 
