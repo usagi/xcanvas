@@ -680,6 +680,8 @@ module xcanvas {
       super();
       this.game = game;
       this.default_scene = default_scene;
+      // set scene property
+      this.set_scene_property(default_scene);
     }
 
     get is_persistent() { return true; }
@@ -690,7 +692,13 @@ module xcanvas {
     private scene_stack: Array<scene_t> = [];
 
     private get last_scene() { return this.scene_stack.slice(-1)[0]; }
-    
+
+    // set scene property
+    private set_scene_property(scene: scene_t){
+      scene.game = this.game;
+      scene.scene_manager = this.scene_manager;
+    }
+
     push(scene: scene_t) {
       // store current scene components
       var current_components = this.game.components;
@@ -706,9 +714,8 @@ module xcanvas {
       // suspend current scene
       this.last_scene.suspend();
 
-      // prepare scene properties
-      scene.game = this.game;
-      scene.scene_manager = this.scene_manager;
+      // set scene_property
+      this.set_scene_property(scene);
 
       // push new scene
       this.scene_stack.push(scene);
