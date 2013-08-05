@@ -706,6 +706,10 @@ module xcanvas {
       // suspend current scene
       this.last_scene.suspend();
 
+      // prepare scene properties
+      scene.game = this.game;
+      scene.scene_manager = this.scene_manager;
+
       // push new scene
       this.scene_stack.push(scene);
 
@@ -751,6 +755,11 @@ module xcanvas {
   }
 
   export class scene_t extends game_component implements scene_i {
+    // auto set on push to scene_manager
+    game: game_t;
+    // auto set on push to scene_manager
+    scene_manager: scene_manager_t;
+
     initialize() { return this; }
     resume() { }
     suspend() { }
