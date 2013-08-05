@@ -784,11 +784,11 @@ module xcanvas {
     private input_states_size = 16;
     
     // get input state in delta frame
-    get_state(delta_frame = 0) {
+    get_state(button: input_e, delta_frame = 0) {
       if(delta_frame >= this.input_states_size || delta_frame < 0)
         throw 'logic error: out of index';
       
-      return this.input_states[delta_frame];
+      return this.input_states[delta_frame].states[button];
     }
     
     // get delta value from before to current for sticks and triggers in delta frame
