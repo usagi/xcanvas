@@ -571,9 +571,9 @@ module xcanvas {
     constructor() {
       super();
 
-      this.input_state_before = new input_state_t();
-      this.input_state_current = new input_state_t();
       this.input_state_next = new input_state_t();
+      for(var n = this.input_states_size; n; --n)
+        this.input_states.unshift(new input_state_t());
 
       document.addEventListener('keydown', (e: KeyboardEvent) => {
         switch(e.keyCode)
@@ -648,14 +648,14 @@ module xcanvas {
     // for internal; set next button state helper method
     private set_next_button_state(button: input_e) {
       this.input_state_next[button]
-        = this.input_state_before.is_button_press(button)
+        = this.input_states[1].is_button_press(button)
         ? button_e.pressed
         : button_e.pressing;
     }
 
     // for internal; call from initialize_next_button_states
     private initialize_next_button_helper(button: input_e){
-      this.input_state_next[button] = this.input_state_next.is_button_press(button)
+      this.input_state_next[button] = this.input_states[0].is_button_press(button)
         ? button_e.releasing
         : button_e.released
         ;
@@ -690,24 +690,40 @@ module xcanvas {
       this.input_state_next[input_e.stick_R] = vector2_t.zero;
     }
 
-    // get delta value from before to current for sticks and triggers
-    get_delta_value(value_device: input_e) { return vector2_t.sub(this.input_state_current[value_device], this.input_state_before[value_device]); }
-
     // update order; super high priority
     update_order = order_priority.super_high;
 
     // update
     update(game_time: game_time_t) {
-      // refresh input_state_before
-      this.input_state_before = this.input_state_current;
-      this.input_state_current = this.input_state_next;
+      this.input_states.unshift(this.input_state_next);
+      this.input_states.pop();
       this.initialize_next_button_state();
     }
 
     // for internal; input state
     private input_state_next: input_state_t;
-    private input_state_current: input_state_t;
-    private input_state_before: input_state_t;
+    private input_states: Array<input_state> = [];
+    private input_states_size = 16;
+    
+    // get input state in delta frame
+    get state(delta_frame = 0) {
+      if(delta_frame >= input_states_size || delta_frame < 0)
+        throw 'logic error: out of index';
+      
+      return this.input_states[delta_frame];
+    }
+    
+    // get delta value from before to current for sticks and triggers in delta frame
+    get delta_value(value_device: input_e, delta_frame = 0) {
+      if(delta_frame >= input_states_size - 1 || delta_frame < 0)
+        throw 'logic error: out of index';
+      
+      return vector2_t.sub
+        ( this.input_states[delta_frame    ][value_device]
+        , this.input_states[delta_frame + 1][value_device]
+        );
+    }
+
   }
 
   export class scene_manager_t extends game_component {
