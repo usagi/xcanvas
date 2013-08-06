@@ -853,6 +853,9 @@ module xcanvas {
       // push new scene
       this.scene_stack.push(scene);
 
+      // call pushed
+      scene.pushed();
+
       // load components to new scne
       this.game.components.concat(this.last_scene.components);
       this.last_scene.components = this.game.components;
