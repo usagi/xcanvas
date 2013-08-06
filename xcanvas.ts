@@ -885,7 +885,7 @@ module xcanvas {
 
   export interface scene_i extends game_component_i {
     // scene initializer
-    initialize(): scene_i;
+    initialize();
     // call on scene resume timing
     resume();
     // call on scene suspend timing
@@ -904,7 +904,12 @@ module xcanvas {
     // auto set on push to scene_manager
     scene_manager: scene_manager_t;
 
-    initialize() { return this; }
+    constructor(){
+      super();
+      this.initialize();
+    }
+
+    initialize() { }
     resume() { }
     suspend() { }
     pushed() { }
