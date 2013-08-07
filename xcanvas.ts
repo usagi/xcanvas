@@ -790,6 +790,14 @@ module xcanvas {
       
       return this.input_states[delta_frame].states[button];
     }
+
+    // get press state in delta frame
+    is_press(button: input_e, delta_frame = 0) {
+      if(delta_frame >= this.input_states_size || delta_frame < 0)
+        throw 'logic error: out of index';
+      
+      return this.input_states[delta_frame].states[button] > button_e.unkown;
+    }
     
     // get delta value from before to current for sticks and triggers in delta frame
     get_delta(value_device: input_e, delta_frame = 0) {
